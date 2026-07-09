@@ -126,6 +126,16 @@
   margin-top: 0.75rem;
 }
 
+.hour-header {
+  width: 100%;
+  color: #98959d;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0.75rem 0 0.5rem;
+}
+
 .hour-available {
   background-color: #2e2c30;
 }
