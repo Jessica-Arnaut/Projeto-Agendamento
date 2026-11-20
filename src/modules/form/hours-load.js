@@ -3,7 +3,7 @@ import dayjs from "../../libs/dayjs.js"
 import { openingHours } from "../../utils/opening-hours.js"
 import { hoursClick } from "./hours-click.js"
 
-export function loadHours(date) {
+export function loadHours({ date, dailySchedules = [] }) {
   const hours = document.getElementById("hours")
 
   if (!hours) {
@@ -12,6 +12,11 @@ export function loadHours(date) {
 
   // 1. Limpa a lista para não acumular horários antigos
   hours.innerHTML = ""
+
+  // Obtém a lista de horários ocupados no dia selecionado
+  const unavailableHours = dailySchedules.map((schedule) =>
+    dayjs(schedule.when).format("HH:mm")
+  )
 
   const opening = openingHours.map((hour) => {
     // Recupera apenas a hora (ex: "09")
@@ -22,13 +27,17 @@ export function loadHours(date) {
       .hour(Number(scheduleHour))
       .minute(0)
       .second(0)
+      .millisecond(0)
 
     // Verifica se o horário já passou do momento atual
     const isHourInPast = appointmentDate.isBefore(dayjs())
+    const isScheduled = unavailableHours.includes(
+      appointmentDate.format("HH:mm")
+    )
 
     return {
       hour,
-      available: !isHourInPast,
+      available: !isScheduled && !isHourInPast,
     }
   })
 
@@ -49,11 +58,11 @@ export function loadHours(date) {
     li.textContent = item.hour
 
     // Coloca o item dentro da <ul id="hours">
-    if (item.hour === "9:00") {
+    if (item.hour === "09:00") {
       addHourHeader(hours, "Manhã")
     } else if (item.hour === "13:00") {
       addHourHeader(hours, "Tarde")
-    } else if (item.hour === "18:00") {
+    } else if (item.hour === "19:00") {
       addHourHeader(hours, "Noite")
     }
     hours.appendChild(li)

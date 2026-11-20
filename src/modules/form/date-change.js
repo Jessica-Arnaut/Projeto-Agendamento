@@ -4,4 +4,4 @@ import { scheduleDay } from "../schedules/load.js"
 const dateInput = document.getElementById("date")
 
 // recarrega a lista de horários disponíveis quando a data é alterada
-dateInput?.addEventListener("change", scheduleDay)
+dateInput?.addEventListener("change", () => scheduleDay())
