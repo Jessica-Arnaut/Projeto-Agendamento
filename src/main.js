@@ -8,6 +8,7 @@ import "./libs/dayjs.js"
 import "./style/global.css"
 import "./style/form.css"
 import "./style/schedule.css"
+import "./style/ui.css"
 
 //js
 import "./modules/form/submit.js"

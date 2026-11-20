@@ -1,3 +1,4 @@
+import { notify } from "../modules/ui/notify.js"
 import { apiConfig } from "./api-config.js"
 
 export async function scheduleNew({ id, name, when }) {
@@ -13,5 +14,5 @@ export async function scheduleNew({ id, name, when }) {
     throw new Error(`Erro ao criar agendamento: ${response.status}`)
   }
 
-  alert("Agendamento realizado com sucesso!")
+  notify("Agendamento realizado com sucesso!", "success")
 }

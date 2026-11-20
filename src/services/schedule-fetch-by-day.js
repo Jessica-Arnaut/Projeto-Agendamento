@@ -1,7 +1,8 @@
 import dayjs from "../libs/dayjs.js"
+import { notify } from "../modules/ui/notify.js"
 import { apiConfig } from "./api-config.js"
 
-export async function scheduleFetchByDay({ date }) {
+export async function scheduleFetchByDay({ date, throwOnError = false }) {
   try {
     const response = await fetch(`${apiConfig.baseURL}/schedules`)
 
@@ -18,7 +19,15 @@ export async function scheduleFetchByDay({ date }) {
     return dailySchedules
   } catch (error) {
     console.log(error)
-    alert("Não foi possível buscar os agendamentos do dia selecionado.")
+
+    if (throwOnError) {
+      throw error
+    }
+
+    notify(
+      "Não foi possível buscar os agendamentos do dia selecionado.",
+      "error"
+    )
     return []
   }
 }

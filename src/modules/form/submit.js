@@ -1,6 +1,8 @@
 import dayjs from "../../libs/dayjs.js"
+import { scheduleFetchByDay } from "../../services/schedule-fetch-by-day.js"
 import { scheduleNew } from "../../services/schedule-new.js"
 import { scheduleDay } from "../schedules/load.js"
+import { notify } from "../ui/notify.js"
 
 const form = document.querySelector("form")
 const clientName = document.getElementById("client")
@@ -21,14 +23,14 @@ form.onsubmit = async (event) => {
     const name = clientName.value.trim()
 
     if (!name) {
-      return alert("Por favor, informe o nome do cliente.")
+      return notify("Por favor, informe o nome do cliente.", "error")
     }
 
     // recuperando a hora selecionada
     const hourSelected = document.querySelector(".hour-selected")
 
     if (!hourSelected) {
-      return alert("Por favor, selecione um horário.")
+      return notify("Por favor, selecione um horário.", "error")
     }
 
     // RECUPERA SOMENTE A HORA
@@ -40,6 +42,22 @@ form.onsubmit = async (event) => {
       .minute(0)
       .second(0)
       .millisecond(0)
+
+    // confere se o horário continua livre (pode ter sido ocupado por outra pessoa)
+    const currentSchedules = await scheduleFetchByDay({
+      date: selectedDate.value,
+      throwOnError: true,
+    })
+
+    const isTaken = currentSchedules.some((schedule) =>
+      dayjs(schedule.when).isSame(when, "hour")
+    )
+
+    if (isTaken) {
+      notify("Este horário acabou de ser ocupado. Escolha outro.", "error")
+      await scheduleDay()
+      return
+    }
 
     // gera um ID (string para compatibilidade com json-server v1)
     const id = String(new Date().getTime())
@@ -57,7 +75,7 @@ form.onsubmit = async (event) => {
     // limpa o input de nome do cliente
     clientName.value = ""
   } catch (error) {
-    alert("Não foi possível realizar o agendamento.")
+    notify("Não foi possível realizar o agendamento.", "error")
     console.log(error)
   }
 }

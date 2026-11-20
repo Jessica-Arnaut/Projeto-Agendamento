@@ -1,8 +1,18 @@
 import dayjs from "../../libs/dayjs.js"
+import { notify } from "../ui/notify.js"
 
 const periodMorning = document.getElementById("period-morning")
 const periodAfternoon = document.getElementById("period-afternoon")
 const periodNight = document.getElementById("period-night")
+
+function addEmptyMessage(period) {
+  if (period.children.length === 0) {
+    const empty = document.createElement("li")
+    empty.classList.add("empty")
+    empty.textContent = "Nenhum agendamento neste período"
+    period.appendChild(empty)
+  }
+}
 
 export function schedulesShow({ dailySchedules }) {
   try {
@@ -37,8 +47,12 @@ export function schedulesShow({ dailySchedules }) {
         periodNight.appendChild(item)
       }
     })
+
+    addEmptyMessage(periodMorning)
+    addEmptyMessage(periodAfternoon)
+    addEmptyMessage(periodNight)
   } catch (error) {
-    alert("Não foi possível exibir os agendamentos.")
+    notify("Não foi possível exibir os agendamentos.", "error")
     console.log(error)
   }
 }

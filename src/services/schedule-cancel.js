@@ -1,3 +1,4 @@
+import { notify } from "../modules/ui/notify.js"
 import { apiConfig } from "./api-config.js"
 
 export async function scheduleCancel({ id }) {
@@ -10,11 +11,11 @@ export async function scheduleCancel({ id }) {
       throw new Error(`Erro ao cancelar agendamento: ${response.status}`)
     }
 
-    alert("Agendamento cancelado com sucesso!")
+    notify("Agendamento cancelado com sucesso!", "success")
     return true
   } catch (error) {
     console.log(error)
-    alert("Não foi possível cancelar o agendamento.")
+    notify("Não foi possível cancelar o agendamento.", "error")
     return false
   }
 }
